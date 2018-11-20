@@ -1,5 +1,7 @@
 var express = require('express')
 
+console.log(__dirname)
+console.log(__filename)
 var app = express()
 
 app.get('/', function (req, res) {

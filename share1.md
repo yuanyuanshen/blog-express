@@ -218,45 +218,58 @@ npm 5以前没有 package-lock.json 文件
 
 ---
 
-### 断言库
+### path 路径操作模块
 
-断言库主要提供上述断言的语义化方法，用于对参与测试的值做各种各样的判断。这些语义化方法会返回测试的结果，要么成功、要么失败。常见的断言库有 Should.js, Chai.js 等。
+```javascript
+
+path.join(__dirname, '../node_modules')
+
+path.basename(path[, ext])
+
+```
+
+<img src="http://img2.ph.126.net/MgfYCwnWSkO7q2EID4It3w==/6599300675751393002.png" />
 
 ---
 
-### 测试用例 test case
+### node 中的其他成员
 
-为某个特殊目标而编制的一组测试输入、执行条件以及预期结果，以便测试某个程序路径或核实是否满足某个特定需求。
+在每个模块中，除了require、export 等模块相关的API之外，还有两个特殊的成员
+  
+- __dirname 可以用来获取当前文件模块所属目录的绝对路径 **动态获取**
+- __filename 可以用来获取当前文件的绝对路径 **动态获取**
 
-一般的形式为：
+**1. 在文件操作路径中，相对路径设计的是相对于执行node命令所在路径**
+**2. 模块中的路径标识就是相对于当前文件模块，不受执行node命令所处路径影响**
 
 ```javascript
-it('should ...', function() {
-  ...
-    
-  expect(sth).toEqual(sth);
-});
+const fs = require('fs')
+const path = require('path')
+
+// 文件操作中的相对路径
+fs.readFile('c:/a/b/a.txt', 'utf-8', function (err, data) {
+  if (err) throw err
+  console.log(data)
+})
+
+// 文件操作中的相对路径转化为动态获取的绝对路径
+fs.readFile(path.join(__dirname,'./a.txt'), 'utf-8', function (err, data) {
+})
+
+// 模块中的路径标识
+require('./b')
+
 ```
 
 ---
 
-### 测试套件 test suite
+### 中间件 middleware
 
-通常把一组相关的测试称为一个测试套件
+**中间件** 在 Node.js 中被广泛使用，它泛指一种特定的设计模式、一系列的处理单元、过滤器和处理程序，以函数的形式存在，连接在一起，形成一个异步队列，来完成对任何数据的预处理和后处理。
 
-一般的形式为：
+常规的中间件模式
 
-```javascript
-describe('test ...', function() {
-  
-  it('should ...', function() { ... });
-  
-  it('should ...', function() { ... });
-  
-  ...
-  
-});
-```
+<img src="https://upload-images.jianshu.io/upload_images/5236403-89a09dec2d661faa.jpg?imageMogr2/auto-orient/" />
 
 ---
 
