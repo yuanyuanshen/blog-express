@@ -220,3 +220,58 @@ npm 5以前没有 package-lock.json 文件
 3. package-lock.json文件保存node_molules中所有包信息（记录版本号和下载地址等信息）
 
 ---
+
+### path 路径操作模块
+
+```javascript
+
+path.join(__dirname, '../node_modules')
+
+path.basename(path[, ext])
+
+```
+
+<img src="http://img2.ph.126.net/MgfYCwnWSkO7q2EID4It3w==/6599300675751393002.png" />
+
+---
+
+### node 中的其他成员
+
+在每个模块中，除了require、export 等模块相关的API之外，还有两个特殊的成员
+  
+- __dirname 可以用来获取当前文件模块所属目录的绝对路径 **动态获取**
+- __filename 可以用来获取当前文件的绝对路径 **动态获取**
+
+**1. 在文件操作路径中，相对路径设计的是相对于执行node命令所在路径**
+**2. 模块中的路径标识就是相对于当前文件模块，不受执行node命令所处路径影响**
+
+```javascript
+const fs = require('fs')
+const path = require('path')
+
+// 文件操作中的相对路径
+fs.readFile('c:/a/b/a.txt', 'utf-8', function (err, data) {
+  if (err) throw err
+  console.log(data)
+})
+
+// 文件操作中的相对路径转化为动态获取的绝对路径
+fs.readFile(path.join(__dirname,'./a.txt'), 'utf-8', function (err, data) {
+})
+
+// 模块中的路径标识
+require('./b')
+
+```
+
+---
+
+### 中间件 middleware
+
+**中间件** 在 Node.js 中被广泛使用，它泛指一种特定的设计模式、一系列的处理单元、过滤器和处理程序，以函数的形式存在，连接在一起，形成一个异步队列，来完成对任何数据的预处理和后处理。
+
+常规的中间件模式
+
+<img src="https://upload-images.jianshu.io/upload_images/5236403-89a09dec2d661faa.jpg?imageMogr2/auto-orient/" />
+
+---
