@@ -283,7 +283,7 @@ Middleware functions are functions that have access to the request object (req),
 
 ---
 
-### express 中间件
+### 中间件分类
 
 **中间件分类**
 
@@ -297,7 +297,7 @@ Middleware functions are functions that have access to the request object (req),
 - 不关心请求路径和请求方法的中间件，任何请求都会执行
 - 严格匹配请求方法和请求路径的中间件
 
-错误处理中间件
+错误处理中间件 (404 )
 
 内置中间件
 
