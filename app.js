@@ -2,7 +2,15 @@ var express = require('express')
 
 console.log(__dirname)
 console.log(__filename)
+
 var app = express()
+
+var myLogger = function (req, res, next) {
+  console.log('LOGGED')
+  next()
+}
+
+app.use(myLogger)
 
 app.get('/', function (req, res) {
   // res.write('hello')

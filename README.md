@@ -275,3 +275,70 @@ require('./b')
 <img src="https://upload-images.jianshu.io/upload_images/5236403-89a09dec2d661faa.jpg?imageMogr2/auto-orient/" />
 
 ---
+
+### express 中间件
+
+[express 中间件](http://www.expressjs.com.cn/guide/writing-middleware.html)
+
+Middleware functions are functions that have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle. 
+
+中间件的本质就是请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，提高代码灵活性，动态可扩展
+
+---
+
+### express 中间件
+
+**中间件分类**
+
+应用层级别中间件
+
+- 不关心请求路径和请求方法的中间件，任何请求都会执行
+- 关心请求路径的中间件
+
+路由级别中间件
+
+- 不关心请求路径和请求方法的中间件，任何请求都会执行
+- 严格匹配请求方法和请求路径的中间件
+
+错误处理中间件
+
+内置中间件
+
+- express.static
+
+第三方中间件
+
+- body-parser
+- cookie-session
+
+---
+### express 中间件
+
+```js
+// 不关心请求路径和请求方法的中间件
+app.use(function (req, res, next) {
+  console.log('all request must execute!!')
+  next()
+})
+
+app.use(function (req, res, next) {
+  console.log('all request must execute 1 !!')
+})
+
+// 以/XXX 开头的路径的中间件
+app.use('/user/:id', function (req, res, next) {
+  console.log('Request URL:', req.originalUrl)
+  next()
+}, function (req, res, next) {
+  console.log('Request Type:', req.method)
+  next()
+})
+
+// 严格匹配请求方法和请求路径的中间件
+app.get('/aa/bb', function (req, res, next) {
+  console.log('/aa/bb')
+  next()
+})
+
+
+```

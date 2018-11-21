@@ -320,40 +320,71 @@ require('./b')
 
 ---
 
-### spy
+### express 中间件
 
-> 正如 `spy` 字面的意思一样，我们用这种“间谍”来“监视”函数的调用情况
+[express 中间件](http://www.expressjs.com.cn/guide/writing-middleware.html)
 
-通过对监视的函数进行包装，可以通过它清楚的知道该函数被调用过几次、传入什么参数、返回什么结果，甚至是抛出的异常情况。
+Middleware functions are functions that have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle. 
 
-```
-var spy = sinon.spy(MyComp.prototype, 'someMethod');
-
-...
-
-expect(spy.callCount).toEqual(1);
-```
+中间件的本质就是请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，提高代码灵活性，动态可扩展
 
 ---
 
-### stub
+### express 中间件
 
-> 有时候会使用`stub`来嵌入或者直接替换掉一些代码，来达到隔离的目的
+**中间件分类**
 
-一个`stub`可以使用最少的依赖方法来模拟该单元测试。比如一个方法可能依赖另一个方法的执行，而后者对我们来说是透明的。好的做法是使用stub 对它进行隔离替换。这样就实现了更准确的单元测试。
+应用层级别中间件
 
-```
-var myObj = {
-  prop: function() {
-    return 'foo';
-  }
-};
+- 不关心请求路径和请求方法的中间件，任何请求都会执行
+- 关心请求路径的中间件
 
-sinon.stub(myObj, 'prop').callsFake(function() {
-    return 'bar';
-});
+路由级别中间件
 
-myObj.prop(); // 'bar'
+- 不关心请求路径和请求方法的中间件，任何请求都会执行
+- 严格匹配请求方法和请求路径的中间件
+
+错误处理中间件
+
+内置中间件
+
+- express.static
+
+第三方中间件
+
+- body-parser
+- cookie-session
+
+---
+### express 中间件
+
+```js
+// 不关心请求路径和请求方法的中间件
+app.use(function (req, res, next) {
+  console.log('all request must execute!!')
+  next()
+})
+
+app.use(function (req, res, next) {
+  console.log('all request must execute 1 !!')
+})
+
+// 以/XXX 开头的路径的中间件
+app.use('/user/:id', function (req, res, next) {
+  console.log('Request URL:', req.originalUrl)
+  next()
+}, function (req, res, next) {
+  console.log('Request Type:', req.method)
+  next()
+})
+
+// 严格匹配请求方法和请求路径的中间件
+app.get('/aa/bb', function (req, res, next) {
+  console.log('/aa/bb')
+  next()
+})
+
+
 ```
 
 ---
