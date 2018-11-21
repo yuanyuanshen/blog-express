@@ -276,16 +276,6 @@ require('./b')
 
 ---
 
-### 中间件 middleware
-
-**中间件** 在 Node.js 中被广泛使用，它泛指一种特定的设计模式、一系列的处理单元、过滤器和处理程序，以函数的形式存在，连接在一起，形成一个异步队列，来完成对任何数据的预处理和后处理。
-
-常规的中间件模式
-
-<img src="https://upload-images.jianshu.io/upload_images/5236403-89a09dec2d661faa.jpg?imageMogr2/auto-orient/" />
-
----
-
 ### express 中间件
 
 [express 中间件](http://www.expressjs.com.cn/guide/writing-middleware.html)
@@ -296,7 +286,7 @@ Middleware functions are functions that have access to the request object (req),
 
 ---
 
-### 中间件分类
+### express 中间件
 
 **中间件分类**
 
