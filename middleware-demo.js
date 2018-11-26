@@ -1,4 +1,5 @@
 const express = require('express')
+const fs = require('fs')
 
 var app = express()
 
@@ -29,9 +30,14 @@ var router = express.Router()
 // 严格匹配请求方法和请求路径的中间件
 
 app.get('/aa/bb', function (req, res, next) {
-  console.log('/aa/bb')
-  next()
+  fs.readFile('c:/a/b/index.js', 'utf-8', function (err) {
+    if (err) return next(err)
+  })
 })
+
+// 内置中间件
+
+app.use('/public/', express.static('./public/'))
 
 router.use(function (req, res, next) {
   console.log('Time:', Date.now())
@@ -49,9 +55,23 @@ router.use('/user/:id', function (req, res, next) {
 router.get('/user/:id', function (req, res, next) {
   console.log(req.params.id)
   // res.render('special')
+  next()
 })
 
 app.use('/', router)
+
+// 所有都匹配不到时 404 （放在最后）
+app.use(function (req, res, next) {
+  res.send('This is 404 !!!!!')
+})
+
+// 配置全局错误统一处理中间件
+app.use(function (err, req, res, next) {
+  res.status(500).json({
+    err_code: 500,
+    err_msg: err.message
+  })
+})
 
 app.listen(3000, function () {
   console.log('server is runing ...')

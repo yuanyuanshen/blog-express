@@ -64,6 +64,26 @@ Hello World 测试结果：
 
 ---
 
+### express 生成器
+
+>通过应用生成器工具 express-generator 可以快速创建一个应用的骨架
+
+```javascript
+npm install express-generator -g
+
+// 当前目录下的 myapp 目录中创建，并且设置为使用 Pug 模板引擎
+express --view=pug myapp
+
+// 在项目目录下安装依赖包
+cd myapp
+npm install
+
+// 启动应用
+set DEBUG=myapp:* & npm start
+```
+
+---
+
 ### express 路由
 
 Routing refers to how an application’s endpoints (URIs) respond to client requests. 
@@ -85,8 +105,6 @@ app.use(express.static('./public/'))
 app.use('/public/',express.static('./public/'))
 
 ```
-
-
 
 ---
 
@@ -260,12 +278,11 @@ fs.readFile(path.join(__dirname,'./a.txt'), 'utf-8', function (err, data) {
 require('./b')
 
 ```
-
 ---
 
-### 中间件 middleware
+## II. Express 中间件
 
-**中间件** 在 Node.js 中被广泛使用，它泛指一种特定的设计模式、一系列的处理单元、过滤器和处理程序，以函数的形式存在，连接在一起，形成一个异步队列，来完成对任何数据的预处理和后处理。
+**中间件（middleware）** 在 Node.js 中被广泛使用，它泛指一种特定的设计模式、一系列的处理单元、过滤器和处理程序，以函数的形式存在，连接在一起，形成一个异步队列，来完成对任何数据的预处理和后处理。
 
 常规的中间件模式
 
@@ -281,11 +298,11 @@ Middleware functions are functions that have access to the request object (req),
 
 中间件的本质就是请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，提高代码灵活性，动态可扩展
 
+<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1542863886302&di=8c2650a2389ce7e21e5afcf63739266a&imgtype=0&src=http%3A%2F%2Fresupload.xueda.com%2Fupload%2F55ee1c9f-971f-4e88-a708-666a1459c388%2FkX159dhLPTXl.gif" />
+
 ---
 
-### express 中间件
-
-**中间件分类**
+### express 中间件分类
 
 应用层级别中间件
 
@@ -297,7 +314,9 @@ Middleware functions are functions that have access to the request object (req),
 - 不关心请求路径和请求方法的中间件，任何请求都会执行
 - 严格匹配请求方法和请求路径的中间件
 
-错误处理中间件 (404 )
+错误处理中间件 
+
+- 404页面 全局错误页面
 
 内置中间件
 
@@ -309,7 +328,8 @@ Middleware functions are functions that have access to the request object (req),
 - cookie-session
 
 ---
-### express 中间件
+
+### 使用express 中间件
 
 ```js
 // 不关心请求路径和请求方法的中间件
@@ -337,325 +357,48 @@ app.get('/aa/bb', function (req, res, next) {
   next()
 })
 
-
 ```
 
 ---
 
-### mock
+### 使用express 中间件
 
-`mock`一般指在测试过程中，对于某些不容易构造或者不容易获取的对象，用一个虚拟的对象来创建以便测试的测试方法
+```js
+// 内置中间件
+app.use('/public/', express.static('./public/'))
 
-广义的讲，以上的 spy 和 stub 等，以及一些对模块的模拟，对 ajax 返回值的模拟、对 timer 的模拟，都叫做 mock 。
+// 所有都匹配不到时 404 （放在最后）
+app.use('/', router)
+app.use(function (req, res, next) {
+  res.send('This is 404 !!!!!')
+})
 
----
-
-### 测试覆盖率(code coverage)
-
-用于统计测试用例对代码的测试情况，生成相应的报表，比如 `istanbul` 是常见的测试覆盖率统计工具。
-
-<img src="
-https://user-gold-cdn.xitu.io/2018/10/25/166a6d35efe402b0?w=1190&h=490&f=png&s=97141)" />
-
-- 语句覆盖率（statement coverage）：是否每个语句都执行了
-- 分支覆盖率（branch coverage）：是否每个`if`代码块都执行了
-- 函数覆盖率（function coverage）：是否每个函数都调用了
-- 行覆盖率（line coverage）：是否每一行都执行了
-
----
-
-## II. Vue.js 中的单元测试工具
-
----
-
-### 2.1 Jest
-
-<img src="https://user-gold-cdn.xitu.io/2018/10/25/166a6d3102e7b9e1" alt="jest" width="300" />
-
-Jest 是一个由 Facebook 开发的测试运行器，相对其他测试框架，其特点就是就是内置了常用的测试工具，比如自带断言、测试覆盖率工具，实现了开箱即用。
-
-此外， Jest 的测试用例是并行执行的，而且只执行发生改变的文件所对应的测试，提升了测试速度。
-
----
-
-#### 配置 Jest
-
-可以零配置，只需在 `npm scripts`里面配置了`test: jest`，即可运行`npm test`，自动识别并测试符合其规则的（ Vue.js 项目中一般是 `__tests__` 目录下的）用例文件。
-
-也可以在 package.json 的 jest 字段或独立的 jest.config.js 里自定义配置。
-
----
-
-#### 四个基础单词
-
-编写单元测试的语法通常非常简单；对于`jest`来说，由于其内部使用了 `Jasmine 2` 来进行测试，故其用例语法与 Jasmine 相同。
-
-实际上，只要先记这住四个单词，就足以应付大多数测试情况了：
-
-- `describe`： 定义一个测试套件
-- `it`：定义一个测试用例
-- `expect`：断言的判断条件
-- `toEqual`：断言的比较结果
-
-```
-describe('test ...', function() {
-  it('should ...', function() {
-    expect(sth).toEqual(sth);
-    expect(sth.length).toEqual(1);
-    expect(sth > oth).toEqual(true);
-  });
-});
-```
-
----
-
-### 2.2 sinon
-
-<img src="https://sinonjs.org/assets/images/logo.png" alt="sinon" width="200" />
-<img src="https://user-gold-cdn.xitu.io/2018/10/25/166a6d318ed7742e?w=914&h=868&f=jpeg&s=752425" alt="sinon" width="300" />
-
-各种伪装渗透方法的合集，为单元测试提供了独立而丰富的 spy, stub 和 mock 方法，兼容各种测试框架。
-
-虽然 Jest 本身也有一些实现 spy 等的手段，但 sinon 使用起来更加方便。
-
----
-
-### 2.3 Vue Test Utils
-
-> Vue Test Utils 是 Vue.js 官方的单元测试实用工具库；该工具库使用起来和用以测试 React 组件的 Enzyme 工具库非常相似
-
-它模拟了一部分类似 jQuery 的 API，非常直观并且易于使用和学习，提供了一些接口和几个方法来减少测试的样板代码，方便判断、操纵和遍历 Vue Component 的输出，并且减少了测试代码和实现代码之间的耦合。
-
-一般使用其 `mount()` 或 `shallowMount()` 方法，将目标组件转化为一个 `Wrapper` 对象，并在测试中调用其各种方法，例如：
-
-```javascript
-import { mount } from '@vue/test-utils'
-import Foo from './Foo.vue'
-
-describe('Foo', () => {
-  it('renders a div', () => {
-    const wrapper = mount(Foo)
-    expect(wrapper.contains('div')).toBe(true)
+// 配置全局错误统一处理中间件
+app.get('/aa/bb', function (req, res, next) {
+  fs.readFile('c:/a/b/index.js', 'utf-8', function (err) {
+    if (err) return next(err)
   })
 })
-```
 
+app.use(function (err, req, res, next) {
+  res.status(500).json({
+    err_code: 500,
+    err_msg: err.message
+  })
+})
+
+// 第三方级别中间件
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+```
 ---
 
 ## III. 更多 Vue.js 的单元测试实例
 
-[CabinetVisual.js](http://git.jd.com/CCS/ccs-console-web/blob/master/__tests__/components/cabinetVisual/CabinetVisual.js)
-
-[NotI18n.js](http://git.jd.com/CCS/ccs-console-web/blob/master/__tests__/components/common/NotI18n.js)
-
 ---
-
-### 整合到工作流中
-
-写好的单元测试，如果仅仅要靠每次 `npm test` 手动执行，必然会有日久忘记、逐渐过时，最后甚至无法执行的情况。
-
-有多个时间点可以作为选择，插入自动执行单元测试 -- 例如每次保存文件、每次执行 build 等
-
-也可以在项目中安装 `pre-commit` 依赖包；然后在 `package.json` 中配置 npm scripts ：
-
-```json
-"scripts": {
-  ...
-  "test": "jest"
-},
-"pre-commit": [
-  "test"
-],
-```
-
----
-
 
 ## IV. 用单元测试改善 Vue.js 组件
-
-单元测试除了减少错误，另一个显著的好处是能让我们组件化的思路越来越清晰，养成日益良好的习惯。
-
-- 单元测试保证了每次对组件做出的更改后，组件都能正确工作
-
-- 单元测试另一个重要的方面是用其检验组件架构化水平优劣的能力
-
-- 设计不佳的组件无法测试，对其更新就会造成更多的功能处于失控状态，形成恶性循环
-
----
-
-### 一个封装不好的组件
-
-假设要对 NumStepper.vue 组件进行测试
-
-<img src="
-https://user-gold-cdn.xitu.io/2018/10/25/166a6d61f56316dc?w=1140&h=702&f=png&s=84971)" />
-
----
-
-```javascript
-//NumStepper.vue
-
-<template>
-  <div>
-    <button class="plus" v-on:click="updateNumber(+1)">加</button>
-    <button class="minus" v-on:click="updateNumber(-1)">减</button>
-    <button class="zero" v-on:click="clear">清</button>
-  </div>
-</template>
-
-<script>
-export default {
-  props: {
-    targetData: Object,
-    clear: Function
-  },
-  methods: {
-    updateNumber: function(n) {
-      this.targetData.num += n;
-    }
-  }
-}
-</script>
-```
-
----
-
-该组件又依赖一个外层组件给其提供数据和方法：
-
-```javascript
-//NumberDisplay.vue
-<template>
-  <div>
-    <p>{{somedata.num}}</p>
-    <NumStepper :targetData="somedata" :clear="clear" />
-  </div>
-</template>
-<script>
-import NumStepper from "./NumStepper"
-export default {
-  components: {
-    NumStepper
-  },
-  data() {
-    return {
-      somedata: {
-        num: 999
-      },
-      tgt: this
-    }
-  },
-  methods: {
-    clear: function() {
-      this.somedata.num = 0;
-    }
-  }
-}
-</script>
-```
-
----
-
-这样一来，测试就得这样写：
-
-```javascript
-import { shallowMount } from "@vue/test-utils";
-import Vue from 'vue';
-import NumStepper from '@/components/NumStepper';
-import NumberDisplay from '@/components/NumberDisplay';
-
-describe("测试 NumStepper 组件", ()=>{
-  it("应该能够影响外层组件的数据", ()=>{
-    const display = shallowMount(NumberDisplay);
-    const wrapper = shallowMount(NumStepper, {
-      propsData: {
-        targetData: display.vm.somedata,
-        clear: display.vm.clear
-      }
-    });
-
-    expect(display.vm.somedata.num).toBe(999);
-
-    wrapper.find('.plus').trigger('click');
-    wrapper.find('.plus').trigger('click');
-    expect(display.vm.somedata.num).toBe(1001);
-
-    wrapper.find('.minus').trigger('click');
-    expect(display.vm.somedata.num).toBe(1000);
-
-    wrapper.find('.zero').trigger('click');
-    expect(display.vm.somedata.num).toBe(0);
-  })
-});
-```
-
----
-
-`<NumStepper>` 测试起来非常复杂，因为它关联了外部组件的实现细节。
-
-测试场景中需要一个额外的 `<NumberDisplay>` 组件，用来重现外部组件、向目标组件传递数据和方法，并检验目标组件是否正确修改了外部组件的状态。
-
-假如 `<NumberDisplay>` 组件再依赖其他组件或环境变量、全局方法等，事情将变得更糟糕，可能需要单独实现若干测试专用组件，甚至根本无法测试。
-
----
-
-### 改善后的组件
-
-当 `<NumStepper>` 独立于外部组件的细节时，测试就简单了
-  
-```javascript
-//NumStepper2.vue
-
-<template>
-  <div>
-    <button class="plus" v-on:click="updateFunc(+1)">加</button>
-    <button class="minus" v-on:click="updateFunc(-1)">减</button>
-    <button class="zero" v-on:click="clearFunc">清</button>
-  </div>
-</template>
-
-<script>
-export default {
-  props: {
-    updateFunc: Function,
-    clearFunc: Function
-  }
-}
-</script>
-```
-
----
-
-在测试中，就不用引入额外的组件了：
-
-```javascipt
-import { shallowMount } from "@vue/test-utils";
-import Vue from 'vue';
-import NumStepper from '@/components/NumStepper2';
-
-describe("测试 NumStepper 组件", ()=>{
-  it("应该能够影响外层组件的数据", ()=>{
-    const obj = {
-      func1: function(){},
-      func2: function(){}
-    };
-    const spy1 = jest.spyOn(obj, "func1");
-    const spy2 = jest.spyOn(obj, "func2");
-
-    const wrapper = shallowMount(NumStepper, {
-      propsData: {
-        updateFunc: spy1,
-        clearFunc: spy2
-      }
-    });
-    wrapper.find('.plus').trigger('click');
-    expect(spy1).toHaveBeenCalled();
-    wrapper.find('.minus').trigger('click');
-    expect(spy1).toHaveBeenCalled();
-    wrapper.find('.zero').trigger('click');
-    expect(spy2).toHaveBeenCalled();
-  })
-});
-```
 
 ---
 
