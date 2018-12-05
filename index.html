@@ -87,16 +87,47 @@ npm install express --save
 ```
 ---
 
-Hello World
+### Hello XXX (node)
+
+```javascript
+
+var http = require('http')
+
+http.createServer(function (req, res) {
+  // 主页
+  if (req.url == "/") {
+    res.end("Holle hemo!");
+  }
+
+  // About页
+  else if (req.url == "/about") {
+    res.end("Hello about!");
+  }
+
+}).listen('3009', 'localhost', function () {
+  console.log('listen 3009 ....')
+})
+
+```
+Hello XXX 测试结果：
+
+<img src="http://img2.ph.126.net/oE0IH7qACaZ8IN7xmJyclg==/6608197923843520949.png" height="200" width="600" />
+
+---
+
+### Hello XXX (express)
 
 ```javascript
 
 var express = require('express')
-
 var app = express()
 
 app.get('/', function (req, res) {
-  res.send('hello world ...')
+  res.send('hello home ...')
+})
+
+app.get('/about', function (req, res) {
+  res.send('hello about ...')
 })
 
 app.listen(3000, function () {
@@ -104,30 +135,9 @@ app.listen(3000, function () {
 })
 
 ```
-Hello World 测试结果：
+Hello XXX 测试结果：
 
-<img src="http://img1.ph.126.net/4rbKjFebIGFp27lrwJziag==/6631702183913005570.png" height="200" width="600" />
-
-
----
-
-### express 生成器
-
->通过应用生成器工具 express-generator 可以快速创建一个应用的骨架
-
-```javascript
-npm install express-generator -g
-
-// 当前目录下的 myapp 目录中创建，并且设置为使用 Pug 模板引擎
-express --view=pug myapp
-
-// 在项目目录下安装依赖包
-cd myapp
-npm install
-
-// 启动应用
-set DEBUG=myapp:* & npm start
-```
+<img src="http://img1.ph.126.net/py2gHZzmQ0S_EcqeRgqgKQ==/6632748918979936684.png" height="200" width="600" />
 
 ---
 
@@ -341,11 +351,92 @@ require('./b')
 
 [express 中间件](http://www.expressjs.com.cn/guide/writing-middleware.html)
 
-Middleware functions are functions that have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle. 
+**Middleware functions are functions** that have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle. 
 
 中间件的本质就是请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，提高代码灵活性，动态可扩展
 
 <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1542863886302&di=8c2650a2389ce7e21e5afcf63739266a&imgtype=0&src=http%3A%2F%2Fresupload.xueda.com%2Fupload%2F55ee1c9f-971f-4e88-a708-666a1459c388%2FkX159dhLPTXl.gif" />
+
+---
+
+### 中间件的使用
+
+```js
+var express = require('express')
+var app = express()
+var myLogger = function (req, res, next) {
+  console.log('LOGGED')
+  next()
+  console.log('After LOGGED')
+}
+var myLogger2 = function (req, res, next) {
+  console.log('LOGGED2')
+  next();
+  console.log('After LOGGED2')
+}
+app.use(myLogger)
+app.use(myLogger2)
+app.listen(3000, function () {
+  console.log('express app is runing .....')
+})
+```
+
+<img src="http://img0.ph.126.net/RJXU-zBFcnMXnpD_lV9q2Q==/6597876808193903130.png" />
+
+---
+
+### 实现中间件机制
+
+```js
+function express() {
+
+  var taskArrray = []
+  var app = function (req, res) {
+
+    var i = 0
+    function next() {
+      var task = taskArrray[i++]
+      if (!task) {
+        return;
+      }
+      task(req, res, next);
+    }
+    next();
+  }
+  // 将中间件存入数组中
+  app.use = function (task) {
+    taskArrray.push(task)
+  }
+
+  return app;
+}
+
+```
+
+---
+
+### 实现中间件机制测试结果
+
+```js
+var http = require('http')
+var app = express();
+http.createServer(app).listen('3000', function () {
+    console.log('listening 3000....');
+});
+var myLogger = function (req, res, next) {
+  console.log('LOGGED')
+  next()
+  console.log('After LOGGED')
+}
+var myLogger2 = function (req, res, next) {
+  console.log('LOGGED2')
+  next();
+  console.log('After LOGGED2')
+}
+app.use(myLogger)
+app.use(myLogger2)
+```
+<img src="http://img0.ph.126.net/RJXU-zBFcnMXnpD_lV9q2Q==/6597876808193903130.png" />
 
 ---
 
@@ -441,23 +532,132 @@ app.use(bodyParser.json());
 ```
 ---
 
-## III. 更多 Vue.js 的单元测试实例
+## III. express 在vue项目中模拟接口
+
+结合ccs-operation-web中 模拟接口 ./api/server.js
+
+<img src="http://img1.ph.126.net/WcCZiUNffqFb30aEx8pjJA==/6597292967519440276.png" />
+
 
 ---
 
-## IV. 用单元测试改善 Vue.js 组件
+### ccs-operation-web ./api/server.js
+
+```js
+const express = require('express');
+const bodyParser = require('body-parser');
+const request = require('request');
+const path = require('path');
+const walk = require('klaw-sync');
+
+const {
+	origin_proxy_url,
+	local_proxy_port,
+	local_proxy_url
+} = require('../config/proxyConfig');
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+let _existRoutes = [];
+
+```
 
 ---
 
-## V. 总结
+```js
 
-单元测试作为一种经典的开发和重构手段，在软件开发领域被广泛认可和采用；前端领域也逐渐积累起了丰富的测试框架和方法。
+app.use( (req, res, next)=>{ 
+	const {url, body, method} = req;
+	if (!~_existRoutes.indexOf(req.path)) {	
+		const rurl = origin_proxy_url.replace(/\/$/, '') + url;
+		let r = method === 'POST'
+			? request.post({url: rurl, form: body}, (err, httpRes, reqBody)=>{
+				console.log(err, reqBody, body)
+			})
+			: request(rurl);
+		console.log(`本地未定义的请求，跳转到 ${method} ${rurl}`);
+		req.pipe(r).pipe(res);
+		return;
+	}
+	next();
+});
 
-单元测试可以为我们的开发和维护提供基础保障，使我们在思路清晰、心中有底的情况下完成对代码的搭建和重构。
+//遍历本目录下的 *.api.js
+walk(path.resolve('./'))
+    .filter(p=>/\.api\.js$/.test(p.path))
+    .map(p=>p.path)
+    .forEach(part=>require(part)(app));
 
-封装好则测试易，反之不恰当的封装让测试变得困难。
+//记录注册过的路由
+_existRoutes = app._router.stack.filter(s=>s.route).map(s=>s.route.path);
 
-可测试性是一个检验组件结构良好程度的实践标准。
+app.listen(local_proxy_port, ()=>{
+	console.log(`\n\n local server running at ${local_proxy_url} \n\n`);
+});
+
+```
+---
+
+### klaw-sync
+
+>klaw-sync is a Node.js recursive and fast file system walker
+
+```js
+// 用法
+const klawSync = require('klaw-sync')
+const paths = klawSync('/some/dir')
+// paths = [{path: '/some/dir/dir1', stats: {}}, {path: '/some/dir/file1', stats: {}}]
+
+```
+
+<img src="http://img1.ph.126.net/O9u0y_p_bozsoAXriKSPNQ==/1813261800070591348.png" />
+
+---
+
+### request
+
+>Request - Simplified HTTP client
+
+```js
+// 用法
+npm install request
+
+var request = require('request');
+request('http://www.google.com', function (error, response, body) {
+  console.log('error:', error); 
+  console.log('statusCode:', response && response.statusCode);
+  console.log('body:', body);
+});
+
+req.pipe(request('http://mysite.com/doodle.png')).pipe(resp)
+
+```
+
+<img src="http://img1.ph.126.net/B5PvG3HL_10m5apiaz5EpA==/2114158550174263057.png" />
+
+---
+
+## IV. 总结
+
+express 基于 Node.js 平台，快速、开放、极简的 Web 开发框架
+
+简单来说，封装了node中http核心模块，专注于业务逻辑的开发。
+
+express 核心内容 ： 理解、使用中间件
+
+<!-- 它类似的 koa2，另外提到中间件的时候，可以简单分析下原理 -->
+<!-- node本身做服务器的写法 也简单提一下最好 -->
+https://www.jianshu.com/p/797a4e38fe77
+https://segmentfault.com/a/1190000013953688
+
+
 
 
 

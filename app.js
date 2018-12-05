@@ -8,16 +8,24 @@ var app = express()
 var myLogger = function (req, res, next) {
   console.log('LOGGED')
   next()
+  console.log('After LOGGED')
+}
+
+var myLogger2 = function (req, res, next) {
+  console.log('LOGGED2')
+  next();
+  console.log('After LOGGED2')
 }
 
 app.use(myLogger)
+app.use(myLogger2)
 
 app.get('/', function (req, res) {
-  // res.write('hello')
-  // res.write('world')
-  // res.end()
+  res.send('hello home ...')
+})
 
-  res.send('hello world ...')
+app.get('/about', function (req, res) {
+  res.send('hello about ...')
 })
 
 // app.use(express.static('./public/'))

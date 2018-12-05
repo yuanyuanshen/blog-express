@@ -2,6 +2,7 @@
 
 定期分享 第一期《express.js 相关内容》
 
+
 - [Node.js](https://nodejs.org/zh-cn/) 《Node.js 官网（中文）》
 - [Node.js](https://nodejs.org/en/) 《Node.js 官网（英文）》
 
@@ -43,16 +44,47 @@ npm install express --save
 ```
 ---
 
-Hello World
+### Hello XXX (node)
+
+```javascript
+
+var http = require('http')
+
+http.createServer(function (req, res) {
+  // 主页
+  if (req.url == "/") {
+    res.end("Holle hemo!");
+  }
+
+  // About页
+  else if (req.url == "/about") {
+    res.end("Hello about!");
+  }
+
+}).listen('3009', 'localhost', function () {
+  console.log('listen 3009 ....')
+})
+
+```
+Hello XXX 测试结果：
+
+<img src="http://img2.ph.126.net/oE0IH7qACaZ8IN7xmJyclg==/6608197923843520949.png" height="200" width="600" />
+
+---
+
+### Hello XXX (express)
 
 ```javascript
 
 var express = require('express')
-
 var app = express()
 
 app.get('/', function (req, res) {
-  res.send('hello world ...')
+  res.send('hello home ...')
+})
+
+app.get('/about', function (req, res) {
+  res.send('hello about ...')
 })
 
 app.listen(3000, function () {
@@ -60,10 +92,9 @@ app.listen(3000, function () {
 })
 
 ```
-Hello World 测试结果：
+Hello XXX 测试结果：
 
-<img src="http://img1.ph.126.net/4rbKjFebIGFp27lrwJziag==/6631702183913005570.png" height="200" width="600" />
-
+<img src="http://img1.ph.126.net/py2gHZzmQ0S_EcqeRgqgKQ==/6632748918979936684.png" height="200" width="600" />
 
 ---
 
@@ -88,8 +119,6 @@ app.use(express.static('./public/'))
 app.use('/public/',express.static('./public/'))
 
 ```
-
-
 
 ---
 
@@ -263,12 +292,11 @@ fs.readFile(path.join(__dirname,'./a.txt'), 'utf-8', function (err, data) {
 require('./b')
 
 ```
-
 ---
 
-### 中间件 middleware
+## II. Express 中间件
 
-**中间件** 在 Node.js 中被广泛使用，它泛指一种特定的设计模式、一系列的处理单元、过滤器和处理程序，以函数的形式存在，连接在一起，形成一个异步队列，来完成对任何数据的预处理和后处理。
+**中间件（middleware）** 在 Node.js 中被广泛使用，它泛指一种特定的设计模式、一系列的处理单元、过滤器和处理程序，以函数的形式存在，连接在一起，形成一个异步队列，来完成对任何数据的预处理和后处理。
 
 常规的中间件模式
 
@@ -280,15 +308,96 @@ require('./b')
 
 [express 中间件](http://www.expressjs.com.cn/guide/writing-middleware.html)
 
-Middleware functions are functions that have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle. 
+**Middleware functions are functions** that have access to the request object (req), the response object (res), and the next function in the application’s request-response cycle. 
 
 中间件的本质就是请求处理方法，把用户从请求到响应的整个过程分发到多个中间件中去处理，提高代码灵活性，动态可扩展
 
+<img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1542863886302&di=8c2650a2389ce7e21e5afcf63739266a&imgtype=0&src=http%3A%2F%2Fresupload.xueda.com%2Fupload%2F55ee1c9f-971f-4e88-a708-666a1459c388%2FkX159dhLPTXl.gif" />
+
 ---
 
-### express 中间件
+### 中间件的使用
 
-**中间件分类**
+```js
+var express = require('express')
+var app = express()
+var myLogger = function (req, res, next) {
+  console.log('LOGGED')
+  next()
+  console.log('After LOGGED')
+}
+var myLogger2 = function (req, res, next) {
+  console.log('LOGGED2')
+  next();
+  console.log('After LOGGED2')
+}
+app.use(myLogger)
+app.use(myLogger2)
+app.listen(3000, function () {
+  console.log('express app is runing .....')
+})
+```
+
+<img src="http://img0.ph.126.net/RJXU-zBFcnMXnpD_lV9q2Q==/6597876808193903130.png" />
+
+---
+
+### 实现中间件机制
+
+```js
+function express() {
+
+  var taskArrray = []
+  var app = function (req, res) {
+
+    var i = 0
+    function next() {
+      var task = taskArrray[i++]
+      if (!task) {
+        return;
+      }
+      task(req, res, next);
+    }
+    next();
+  }
+  // 将中间件存入数组中
+  app.use = function (task) {
+    taskArrray.push(task)
+  }
+
+  return app;
+}
+
+```
+
+---
+
+### 实现中间件机制测试结果
+
+```js
+var http = require('http')
+var app = express();
+http.createServer(app).listen('3000', function () {
+    console.log('listening 3000....');
+});
+var myLogger = function (req, res, next) {
+  console.log('LOGGED')
+  next()
+  console.log('After LOGGED')
+}
+var myLogger2 = function (req, res, next) {
+  console.log('LOGGED2')
+  next();
+  console.log('After LOGGED2')
+}
+app.use(myLogger)
+app.use(myLogger2)
+```
+<img src="http://img0.ph.126.net/RJXU-zBFcnMXnpD_lV9q2Q==/6597876808193903130.png" />
+
+---
+
+### express 中间件分类
 
 应用层级别中间件
 
@@ -300,7 +409,9 @@ Middleware functions are functions that have access to the request object (req),
 - 不关心请求路径和请求方法的中间件，任何请求都会执行
 - 严格匹配请求方法和请求路径的中间件
 
-错误处理中间件 (404 )
+错误处理中间件 
+
+- 404页面 全局错误页面
 
 内置中间件
 
@@ -312,7 +423,8 @@ Middleware functions are functions that have access to the request object (req),
 - cookie-session
 
 ---
-### express 中间件
+
+### 使用express 中间件
 
 ```js
 // 不关心请求路径和请求方法的中间件
@@ -340,5 +452,163 @@ app.get('/aa/bb', function (req, res, next) {
   next()
 })
 
+```
+
+---
+
+### 使用express 中间件
+
+```js
+// 内置中间件
+app.use('/public/', express.static('./public/'))
+
+// 所有都匹配不到时 404 （放在最后）
+app.use('/', router)
+app.use(function (req, res, next) {
+  res.send('This is 404 !!!!!')
+})
+
+// 配置全局错误统一处理中间件
+app.get('/aa/bb', function (req, res, next) {
+  fs.readFile('c:/a/b/index.js', 'utf-8', function (err) {
+    if (err) return next(err)
+  })
+})
+
+app.use(function (err, req, res, next) {
+  res.status(500).json({
+    err_code: 500,
+    err_msg: err.message
+  })
+})
+
+// 第三方级别中间件
+const bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+```
+---
+
+## III. express 在vue项目中模拟接口
+
+结合ccs-operation-web中 模拟接口 ./api/server.js
+
+<img src="http://img1.ph.126.net/WcCZiUNffqFb30aEx8pjJA==/6597292967519440276.png" />
+
+
+---
+
+### ccs-operation-web ./api/server.js
+
+```js
+const express = require('express');
+const bodyParser = require('body-parser');
+const request = require('request');
+const path = require('path');
+const walk = require('klaw-sync');
+
+const {
+	origin_proxy_url,
+	local_proxy_port,
+	local_proxy_url
+} = require('../config/proxyConfig');
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+let _existRoutes = [];
 
 ```
+
+---
+
+```js
+
+app.use( (req, res, next)=>{ 
+	const {url, body, method} = req;
+	if (!~_existRoutes.indexOf(req.path)) {	
+		const rurl = origin_proxy_url.replace(/\/$/, '') + url;
+		let r = method === 'POST'
+			? request.post({url: rurl, form: body}, (err, httpRes, reqBody)=>{
+				console.log(err, reqBody, body)
+			})
+			: request(rurl);
+		console.log(`本地未定义的请求，跳转到 ${method} ${rurl}`);
+		req.pipe(r).pipe(res);
+		return;
+	}
+	next();
+});
+
+//遍历本目录下的 *.api.js
+walk(path.resolve('./'))
+    .filter(p=>/\.api\.js$/.test(p.path))
+    .map(p=>p.path)
+    .forEach(part=>require(part)(app));
+
+//记录注册过的路由
+_existRoutes = app._router.stack.filter(s=>s.route).map(s=>s.route.path);
+
+app.listen(local_proxy_port, ()=>{
+	console.log(`\n\n local server running at ${local_proxy_url} \n\n`);
+});
+
+```
+---
+
+### klaw-sync
+
+>klaw-sync is a Node.js recursive and fast file system walker
+
+```js
+// 用法
+const klawSync = require('klaw-sync')
+const paths = klawSync('/some/dir')
+// paths = [{path: '/some/dir/dir1', stats: {}}, {path: '/some/dir/file1', stats: {}}]
+
+```
+
+<img src="http://img1.ph.126.net/O9u0y_p_bozsoAXriKSPNQ==/1813261800070591348.png" />
+
+---
+
+### request
+
+>Request - Simplified HTTP client
+
+```js
+// 用法
+npm install request
+
+var request = require('request');
+request('http://www.google.com', function (error, response, body) {
+  console.log('error:', error); 
+  console.log('statusCode:', response && response.statusCode);
+  console.log('body:', body);
+});
+
+req.pipe(request('http://mysite.com/doodle.png')).pipe(resp)
+
+```
+
+<img src="http://img1.ph.126.net/B5PvG3HL_10m5apiaz5EpA==/2114158550174263057.png" />
+
+---
+
+## IV. 总结
+
+express 基于 Node.js 平台，快速、开放、极简的 Web 开发框架
+
+简单来说，封装了node中http核心模块，专注于业务逻辑的开发。
+
+express 核心内容 ： 理解、使用中间件
+
+<!-- 它类似的 koa2，另外提到中间件的时候，可以简单分析下原理 -->
+https://segmentfault.com/a/1190000013953688
+
