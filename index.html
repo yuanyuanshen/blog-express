@@ -1,53 +1,50 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<meta charset="utf-8" />
+		<title>I. express简介</title>
+		<style>
+			
+img {
+  max-width: 90%;
+  margin: 0 auto;
+}
 
-<head>
-    <meta charset="utf-8" />
-    <title>I. express简介</title>
-    <style>
-        img {
-            max-width: 90%;
-            margin: 0 auto;
-        }
-        
-        .remark-slide-scaler {
-            left: 50%;
-            width: 90%;
-            transform: translateX(-50%);
-        }
-        
-        .remark-slide-content {
-            padding: 1em 3em;
-            position: relative;
-        }
-        
-        .remark-slide-content::after {
-            content: "";
-            display: inline-block;
-            width: 288px;
-            height: 76px;
-            background: url('logo.png') no-repeat 50% 50%;
-            position: absolute;
-            right: 50px;
-            bottom: 50px;
-            z-index: 0;
-            filter: blur(10);
-            opacity: .1;
-        }
-        
-        .remark-slides-area>div:first-of-type .remark-slide-content {
-            text-align: center;
-            padding: .5em;
-        }
-        
-        .remark-slides-area>div:first-of-type .remark-slide-content::after {
-            display: none;
-        }
-    </style>
-</head>
+.remark-slide-scaler {
+  left: 50%;
+  width: 90%;
+  transform: translateX(-50%);
+}
 
-<body>
-    <textarea id="source">
+.remark-slide-content {
+  padding: 1em 3em;
+  position: relative;
+}
+.remark-slide-content::after {
+  content: "";
+  display: inline-block;
+  width: 288px;
+  height: 76px;
+  background: url('logo.png') no-repeat 50% 50%;
+  position: absolute;
+  right: 50px;
+  bottom: 50px;
+  z-index: 0;
+  filter: blur(10);
+  opacity: .1;
+}
+
+.remark-slides-area>div:first-of-type .remark-slide-content {
+  text-align: center;
+  padding: .5em;
+}
+.remark-slides-area>div:first-of-type .remark-slide-content::after {
+  display: none;
+}
+		</style>
+	</head>
+	<body>
+		<textarea id="source">
 
 - [Node.js](https://nodejs.org/zh-cn/) 《Node.js 官网（中文）》
 - [Node.js](https://nodejs.org/en/) 《Node.js 官网（英文）》
@@ -543,11 +540,6 @@ app.use(bodyParser.json());
 
 ---
 
-### 问题
-
-1. 项目中使用npm run devloacl 访问css接口、也可以访问loacl接口
-2. 想把豆瓣、XX接口二次封装之后通过 localhost：XXXX端口使用
-
 <img src="http://img2.ph.126.net/ODW9rXWQplDwWdDVP0j9zg==/6632632370747397731.png" />
 <img src="http://img1.ph.126.net/Av6er4OmoNcS6vjXr_shGA==/1343480063940433144.png" />
 
@@ -701,11 +693,10 @@ express 核心内容 ： 理解、使用中间件
 
 
 		</textarea>
-    <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
-    <script>
-        var slideshow = remark.create();
-    </script>
-    <script></script>
-</body>
-
+		<script src="https://gnab.github.io/remark/downloads/remark-latest.min.js"></script>
+		<script>
+			var slideshow = remark.create();
+		</script>
+		<script></script>
+	</body>
 </html>

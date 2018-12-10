@@ -493,11 +493,6 @@ app.use(bodyParser.json());
 
 ---
 
-### 问题
-
-1. 项目中使用npm run devloacl 访问css接口、也可以访问loacl接口
-2. 想把豆瓣、XX接口二次封装之后通过 localhost：XXXX端口使用
-
 <img src="http://img2.ph.126.net/ODW9rXWQplDwWdDVP0j9zg==/6632632370747397731.png" />
 <img src="http://img1.ph.126.net/Av6er4OmoNcS6vjXr_shGA==/1343480063940433144.png" />
 
