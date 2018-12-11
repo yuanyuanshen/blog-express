@@ -549,6 +549,31 @@ app.use(bodyParser.json());
 
 ---
 
+### 运行express服务器
+
+```js
+"scripts": {
+    "server": "nodemon api/server.js",
+    "dev": "webpack-dev-server --inline --progress --open --config build/webpack.dev.conf.js",
+    // 影响ccs-operation-web/config/proxyConfig.js http://localhost:3002/api/listContracts?pin=X&all=X
+    "devlocal": "shell-exec --colored-output \"npm run dev --local\" \"npm run server\"",
+  }
+
+```
+
+**shell-executor**
+
+>A small nodejs module to execute shell commands in parallel
+
+```js
+npm i -g shell-executor
+// --colored-output  Use colored output in logs
+shell-exec --colored-output 'npm run lint' 'npm run test' 'npm run watch'
+
+```
+
+---
+
 ### ccs-operation-web ./api/server.js
 
 ```js
