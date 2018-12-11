@@ -495,6 +495,39 @@ app.use(bodyParser.json());
 
 <img src="http://img1.ph.126.net/WcCZiUNffqFb30aEx8pjJA==/6597292967519440276.png" />
 
+---
+
+<img src="http://img2.ph.126.net/ODW9rXWQplDwWdDVP0j9zg==/6632632370747397731.png" />
+<img src="http://img1.ph.126.net/aJb_W9cCHnC4Plz-C7jugw==/1244400872138259994.png" />
+
+---
+
+<img src="http://img1.ph.126.net/BPnIoG4SXbCfleZuOFqm2g==/295830200623422751.png" />
+
+---
+
+### 运行express服务器
+
+```js
+"scripts": {
+    "server": "nodemon api/server.js",
+    "dev": "webpack-dev-server --inline --progress --open --config build/webpack.dev.conf.js",
+    // 影响ccs-operation-web/config/proxyConfig.js http://localhost:3002/api/listContracts?pin=X&all=X
+    "devlocal": "shell-exec --colored-output \"npm run dev --local\" \"npm run server\"",
+  }
+
+```
+
+**shell-executor**
+
+>A small nodejs module to execute shell commands in parallel
+
+```js
+npm i -g shell-executor
+// --colored-output  Use colored output in logs
+shell-exec --colored-output 'npm run lint' 'npm run test' 'npm run watch'
+
+```
 
 ---
 
@@ -637,7 +670,6 @@ express 核心内容 ： 理解、使用中间件
 
 [express 源码学习 路由](https://segmentfault.com/a/1190000013953688)
 [express 中间件原理](https://www.jianshu.com/p/797a4e38fe77)
-
 
 
 
