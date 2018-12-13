@@ -87,6 +87,28 @@ npm install express --save
 ```
 ---
 
+### koa
+
+>Koa - next generation web framework for node.js
+
+Koa 是一个新的 web 框架，由 Express 幕后的原班人马打造， 致力于成为 web 应用和 API 开发领域中的一个更小、更富有表现力、更健壮的基石。 通过利用 async 函数，Koa 帮你丢弃回调函数，并有力地增强错误处理。 Koa 并没有捆绑任何中间件， 而是提供了一套优雅的方法，帮助您快速而愉快地编写服务端应用程序。
+
+```js
+const Koa = require('koa');
+const app = new Koa();
+
+app.use(async ctx => {
+  ctx.body = 'Hello World';
+});
+
+app.listen(3000);
+
+```
+
+<img src="http://img0.ph.126.net/77JLQd6aN4xQGRW2awLthA==/1933170140149311132.png" />
+
+---
+
 ### Hello XXX (node)
 
 ```javascript
@@ -532,7 +554,62 @@ app.use(bodyParser.json());
 ```
 ---
 
-## III. express 在vue项目中模拟接口
+## III. Express Generator
+
+通过应用生成器工具 express-generator 可以快速创建一个应用的骨架。
+
+```js
+npm install express-generator -g
+express myapp --view=pug
+cd myapp
+npm install
+npm run start
+```
+
+project:myapp 访问http://localhost:3000/ 
+
+<img src="http://img2.ph.126.net/Hdg8CXBpOvwG52ZdpMsIEA==/3906028251914327954.png" />
+
+---
+
+### 目录结构与代码
+
+1.查看myapp目录结构
+
+2.结合中间件分析代码
+
+project: myapp
+
+<img src="http://img1.ph.126.net/KyJ0a3B5-ffQ0Zwwz01IdA==/6608267193075868969.png" height="580px" style="margin-left:400px;margin-top:-160px"/>
+
+---
+
+### 相关中间件
+
+**morgan**
+>HTTP request logger middleware for node.js
+
+**pug**
+>Pug is a high performance template engine heavily influenced by Haml and implemented with JavaScript for Node.js and browsers. For bug reports, feature requests and questions, open an issue. For discussion join the chat room.
+
+```html
+h1 Pug - node template engine
+<h1>Pug - node template engine</h1>
+
+```
+
+```js
+// compile
+var fn = pug.compile('string of pug', options);
+var html = fn(locals);
+ 
+// render
+var html = pug.render('string of pug', merge(options, locals));
+```
+
+---
+
+## IV. express 在vue项目中模拟接口
 
 结合ccs-operation-web中 模拟接口 ./api/server.js
 
@@ -670,32 +747,6 @@ req.pipe(request('http://mysite.com/doodle.png')).pipe(resp)
 ```
 
 <img src="http://img1.ph.126.net/B5PvG3HL_10m5apiaz5EpA==/2114158550174263057.png" />
-
----
-
-## IV. koa
-
->Koa - next generation web framework for node.js
-
-Koa 是一个新的 web 框架，由 Express 幕后的原班人马打造， 致力于成为 web 应用和 API 开发领域中的一个更小、更富有表现力、更健壮的基石。 通过利用 async 函数，Koa 帮你丢弃回调函数，并有力地增强错误处理。 Koa 并没有捆绑任何中间件， 而是提供了一套优雅的方法，帮助您快速而愉快地编写服务端应用程序。
-
----
-
-### koa安装和使用
-
-```js
-const Koa = require('koa');
-const app = new Koa();
-
-app.use(async ctx => {
-  ctx.body = 'Hello World';
-});
-
-app.listen(3000);
-
-```
-
-<img src="http://img0.ph.126.net/77JLQd6aN4xQGRW2awLthA==/1933170140149311132.png" />
 
 ---
 
