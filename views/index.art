@@ -7,22 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 </head>
-
 <body>
-2222222
-    <h5 id="data1"></h5>
-
+<h5 id="data"> Hello {{user.name}}</h5>
+<ul>
+{{each user.tags}}
+   <li> {{$index}} {{$value}}</li>
+{{/each}}
+</ul>
 </body>
-<script>
-    window.onload = function() {
-        var xhr = new XMLHttpRequest();
-        xhr.open('get', 'http://localhost:3000')
-        xhr.send()
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            document.getElementById("data1").innerHTML = xhr.responseText;
-            console.log(xhr.responseText)
-        }
-    }
-</script>
-
 </html>
